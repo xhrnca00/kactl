@@ -6,6 +6,7 @@
  */
 #pragma once
 
+constexpr int mod = 1000000009;
 constexpr int N = 400000;
 
 constexpr int bpow(int b, int e) {
@@ -18,7 +19,7 @@ constexpr int bpow(int b, int e) {
     return r;
 }
 
-constexpr int inv(int n) {
+int inv(int n) {
     return bpow(n, mod-2);
 }
 
