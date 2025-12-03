@@ -8,7 +8,6 @@
 
 constexpr int mod = 1000000009;
 constexpr int N = 400000;
-
 constexpr int bpow(int b, int e) {
     int r = 1;
     while (e > 0) {
@@ -18,18 +17,14 @@ constexpr int bpow(int b, int e) {
     }
     return r;
 }
-
 int inv(int n) {
     return bpow(n, mod-2);
 }
-
 int fac[N + 1];
 int ifac[N + 1];
-
 int nck(int n, int k) {
     return ((1ll*fac[n]*ifac[k]) % mod)*ifac[n-k] % mod;
 }
-
 void init() {
     fac[0] = 1;
     for(int i = 1; i <= N; ++i)
