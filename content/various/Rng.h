@@ -1,9 +1,9 @@
 /**
  * Author: HaroldVemeno
  * Date: 2025-03-12
- * Source: p. 5 of Marsaglia, "Xorshift RNGs"
+ * Source: p.\ 5 of Marsaglia, "Xorshift RNGs"
  * Description: Random number generator, algorithm "xor128"
- * from p. 5 of Marsaglia, "Xorshift RNGs".
+ * from p.\ 5 of Marsaglia, "Xorshift RNGs".
  * Usage: rng_state state{};
  * uint32_t rv = rng(state);
  * Status: unknown
