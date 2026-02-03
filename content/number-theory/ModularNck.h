@@ -5,20 +5,11 @@
  * Status: tested
  */
 #pragma once
+#include "ModPow.h"
 
-constexpr int mod = 1000000009;
 constexpr int N = 400000;
-constexpr int bpow(int b, int e) {
-    int r = 1;
-    while (e > 0) {
-        if(e&1) r = (1ll*r*b) % mod;
-        b = (1ll*b*b) % mod;
-        e /= 2;
-    }
-    return r;
-}
 int inv(int n) {
-    return bpow(n, mod-2);
+    return modpow(n, mod-2);
 }
 int fac[N + 1];
 int ifac[N + 1];
