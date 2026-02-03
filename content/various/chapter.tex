@@ -33,8 +33,13 @@
 		\end{itemize}
 	\subsection{Pragmas}
 		\begin{itemize}
-			\item \lstinline{#pragma GCC optimize ("Ofast")} will make GCC auto-vectorize loops and optimizes floating points better.
-			\item \lstinline{#pragma GCC target ("avx2")} can double performance of vectorized code, but causes crashes on old machines.
+            \item
+                \lstinline{#pragma GCC optimize("O3,unroll-loops")}
+                \lstinline{#include <bits/allocator.h>}
+                \lstinline{#pragma GCC target("avx2,bmi,bmi2,popcnt,lzcnt")}
+                \lstinline{#include <bits/stdc++.h>}
+                (\emph{in this order}) can make things faster, or crash if the instruction sets are not supported.
+                Explicit allocator import is only required on GCC <15.
 			\item \lstinline{#pragma GCC optimize ("trapv")} kills the program on integer overflows (but is really slow).
 		\end{itemize}
     \kactlimport{Rng.h}
