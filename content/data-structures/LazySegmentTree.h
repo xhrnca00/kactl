@@ -1,66 +1,60 @@
 /**
- * Author: Simon Lindholm
- * Date: 2016-10-08
+ * Author: Štěpán Mikéska
+ * Date: 2026-02-04
  * License: CC0
  * Source: me
- * Description: Segment tree with ability to add or set values of large intervals, and compute max of intervals.
- * Can be changed to other things.
- * Use with a bump allocator for better performance, and SmallPtr or implicit indices to save memory.
+ * Description: Segment tree with range add and sum capability.
+ * Can be modified for different operations.
  * Time: O(\log N).
- * Usage: Node* tr = new Node(v, 0, sz(v));
- * Status: stress-tested a bit
+ * Status: not stress tested, but should work
  */
 #pragma once
 
-#include "../various/BumpAllocator.h"
-
-const int inf = 1e9;
-struct Node {
-	Node *l = 0, *r = 0;
-	int lo, hi, mset = inf, madd = 0, val = -inf;
-	Node(int lo,int hi):lo(lo),hi(hi){} // Large interval of -inf
-	Node(vi& v, int lo, int hi) : lo(lo), hi(hi) {
-		if (lo + 1 < hi) {
-			int mid = lo + (hi - lo)/2;
-			l = new Node(v, lo, mid); r = new Node(v, mid, hi);
-			val = max(l->val, r->val);
-		}
-		else val = v[lo];
-	}
-	int query(int L, int R) {
-		if (R <= lo || hi <= L) return -inf;
-		if (L <= lo && hi <= R) return val;
-		push();
-		return max(l->query(L, R), r->query(L, R));
-	}
-	void set(int L, int R, int x) {
-		if (R <= lo || hi <= L) return;
-		if (L <= lo && hi <= R) mset = val = x, madd = 0;
-		else {
-			push(), l->set(L, R, x), r->set(L, R, x);
-			val = max(l->val, r->val);
-		}
-	}
-	void add(int L, int R, int x) {
-		if (R <= lo || hi <= L) return;
-		if (L <= lo && hi <= R) {
-			if (mset != inf) mset += x;
-			else madd += x;
-			val += x;
-		}
-		else {
-			push(), l->add(L, R, x), r->add(L, R, x);
-			val = max(l->val, r->val);
-		}
-	}
-	void push() {
-		if (!l) {
-			int mid = lo + (hi - lo)/2;
-			l = new Node(lo, mid); r = new Node(mid, hi);
-		}
-		if (mset != inf)
-			l->set(lo,hi,mset), r->set(lo,hi,mset), mset = inf;
-		else if (madd)
-			l->add(lo,hi,madd), r->add(lo,hi,madd), madd = 0;
-	}
+struct Tree {
+    struct N { ll sum = 0; ll ladd = 0; };
+    vector<N> it;
+    int s = 1;
+    Tree(vector<int>& as) {
+        while(s < as.size()) s *= 2;
+        it.resize(2*s);
+        for(int i = 0; i < as.size(); ++i) it[s+i].sum = as[i];
+        for(int i = s-1; i > 0; --i)       pull(i);
+    }
+    void tag(int i, ll ladd, int len) {
+        it[i].sum += len*ladd;
+        it[i].ladd += ladd;
+    }
+    void push(int i, int len) {
+        for(int a : {2*i, 2*i+1}) {
+            tag(a, it[i].ladd, len/2);
+        }
+        it[i].ladd = 0;
+    }
+    void pull(int i) {
+        it[i].sum = it[2*i].sum + it[2*i+1].sum;
+    }
+    void add(int l, int r, ll a, int la = 0, int ra = -1, int i = 1) {
+        if(ra == -1) ra = s;
+        if(ra <= l || r <= la) return;
+        if(l <= la && ra <= r) {
+            tag(i, a, ra - la);
+            return;
+        }
+        push(i, ra - la);
+        int ma = (la + ra) / 2;
+        add(l, r, a, la, ma, 2*i  );
+        add(l, r, a, ma, ra, 2*i+1);
+        pull(i);
+    }
+    ll sum(int l, int r, int la = 0, int ra = -1, int i = 1) {
+        if(ra == -1) ra = s;
+        if(ra <= l || r <= la) return 0;
+        if(l <= la && ra <= r) {
+            return it[i].sum;
+        }
+        push(i, ra - la);
+        int ma = (la + ra) / 2;
+        return sum(l, r, la, ma, 2*i  ) +
+               sum(l, r, ma, ra, 2*i+1);
+    }
 };

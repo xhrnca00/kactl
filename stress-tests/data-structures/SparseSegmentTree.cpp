@@ -1,6 +1,6 @@
 #include "../utilities/template.h"
 
-#include "../../content/data-structures/LazySegmentTree.h"
+#include "../../content/data-structures/SparseSegmentTree.h"
 
 static unsigned R;
 int ra() {
