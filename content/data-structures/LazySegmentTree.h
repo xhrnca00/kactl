@@ -33,7 +33,7 @@ struct Tree {
     void pull(int i) {
         it[i].sum = it[2*i].sum + it[2*i+1].sum;
     }
-    void add(int l, int r, ll a, int la = 0, int ra = -1, int i = 1) {
+    void add(int l, int r, ll a, int la=0, int ra=-1, int i=1) {
         if(ra == -1) ra = s;
         if(ra <= l || r <= la) return;
         if(l <= la && ra <= r) {
